@@ -1,5 +1,6 @@
-import logo from './logo.svg';
-import logo2 from './ReactFlow-icon.png';
+import {Link} from 'react-router-dom'
+import logo from './assets/images/logo.svg';
+import logo2 from './assets/images/ReactFlow-icon.png';
 import './App.css';
 
 function App() {
@@ -10,20 +11,15 @@ function App() {
         <p>
           This is a demo project to work with <code>React Flow</code> just try to enter the link.
         </p>
-
         <img src={logo2} className="App-logo2" alt="logo"/>
-
         <p/>
-        <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-        >
+        <Link to={ "/Flow" }>
           Access React Flow DEMO!!
-        </a>
+        </Link>
+
       </header>
     </div>
+
   );
 }
 
