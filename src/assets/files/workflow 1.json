@@ -1,0 +1,52 @@
+{
+    "name": "health-care-uc",
+    "functions": [
+      {
+        "name": "data-parsing",
+        "class_specification_id": "data-parser",
+        "class_specification_version": "0.1",
+        "output_mapping": {
+          "next-step": "ml-preprocessing"
+        },
+        "annotations": {}
+      },
+      {
+        "name": "ml-preprocessing",
+        "class_specification_id": "ml-preprocessor",
+        "class_specification_version": "0.1",
+        "output_mapping": {
+          "next-step": "state-management"
+        },
+        "annotations": {}
+      },
+      {
+        "name": "state-management",
+        "class_specification_id": "state-manager",
+        "class_specification_version": "0.1",
+        "output_mapping": {
+          "next-step": "http-egress"
+        },
+        "annotations": {}
+      }
+    ],
+    "resources": [
+      {
+        "name": "http-ingress",
+        "class_type": "http-ingress",
+        "output_mapping": {
+          "new_request": "data-parsing"
+        },
+        "configurations": {
+          "host": "localhost",
+          "methods": "POST"
+        }
+      },
+      {
+          "name": "http-egress",
+          "class_type": "http-egress",
+          "output_mapping": {},
+          "configurations": {}
+      }
+    ],
+    "annotations": {}
+  }
