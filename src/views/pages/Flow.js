@@ -7,14 +7,14 @@ import ReactFlow, {
     useEdgesState,
     addEdge, MarkerType,
 } from 'reactflow';
-
 import 'reactflow/dist/style.css';
-import "../CSS/nodesStyles.css";
-import ResourceNode from "../../utils/ResourceNode";
-const nodeTypes = {
-    "resource": ResourceNode
-};
 
+//Nodes Style modes
+let styleResourceNode = {
+    background: 'rgba(217,90,109,0.78)'
+}
+
+//DEMO data file
 const fileData = {
     "name": "health-care-uc",
     "functions": [
@@ -68,10 +68,10 @@ const fileData = {
     "annotations": {}
 };
 
-const initialNodes = [], initialEdges = [];
-let i = 2, e_n = 0,o_n = 0, space = 100;
+const initialNodes = [], initialEdges = []; //  Nodes To INIT Flow
+let i = 2, e_n = 0,o_n = 0, space = 100; // Nodes idxs IDs and Position
+let interactive = true; //  Allow user interact with nodes
 
-//Node and edge extraction from main data. Divide between functions(nodes) and resources(EntryPoints )
 fileData.functions.forEach(f => {
     let newNode={
         id: f.name,
@@ -80,7 +80,7 @@ fileData.functions.forEach(f => {
     };
 
     let newEdge={
-        id: "e_"+f.name+"-"+f.output_mapping["next-step"],
+        id: "e_"+f.name+"_"+f.output_mapping["next-step"],
         source: f.name,
         target: f.output_mapping["next-step"],
         markerEnd: {
@@ -98,13 +98,14 @@ fileData.functions.forEach(f => {
     initialNodes.push(newNode);
     initialEdges.push(newEdge);
     i++;
-});
+});//Create a node and an edge from each function entry, normal nodes
 fileData.resources.forEach(r => {
 
     let newNode={
         id: r.name,
         position: {},
-        data: { label: r.name }
+        data: { label: r.name },
+        style: styleResourceNode
     };
 
     if (r.output_mapping["new_request"]){
@@ -116,7 +117,7 @@ fileData.resources.forEach(r => {
     }
 
     let newEdge={
-        id: "e_"+r.name+"-"+r.output_mapping["new_request"],
+        id: "e_"+r.name+"_"+r.output_mapping["new_request"],
         source: r.name,
         target: r.output_mapping["new_request"],
         markerEnd: {
@@ -134,14 +135,15 @@ fileData.resources.forEach(r => {
     initialNodes.push(newNode);
     initialEdges.push(newEdge);
     i++;
-});
+});//Create a node and an edge from each resource entry. Entry points nodes.
 
 const onClickNode = (event, nodeClicked) => console.log(nodeClicked); //Function to execute on node click
 function Flow() {
-    const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+    const [nodes, , onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
     const onConnect = useCallback(
+        // eslint-disable-next-line
         (params) => setEdges((eds) => addEdge(params, eds)),
         [setEdges],
     );
@@ -155,7 +157,8 @@ function Flow() {
                 onEdgesChange={onEdgesChange}
                 onConnect={onConnect}
                 onNodeClick={onClickNode}
-                nodeTypes={nodeTypes}
+                nodesDraggable={interactive}
+                nodesConnectable={interactive}
             >
                 <Controls/>
                 <MiniMap/>
